@@ -2,12 +2,6 @@ import React from 'react'
 import {Dialog, PropTypes} from '@material-ui/core'
 import {Button} from '@material-ui/core'
 import APIURL from '../../../Connect/API-URL'
-
-type propTypes ={
-    token: string | null,
-    id: number
-}
-
 type updateGameLogTypes = {
     modalOpen: boolean,
     title: string,
@@ -15,31 +9,35 @@ type updateGameLogTypes = {
     difficulty: string,
     rating: number,
     comments: string,
-    logID: number
+    id: string
 }
-
-class UpdateGameLog extends React.Component<propTypes, updateGameLogTypes>{
+type propTypes ={
+    token: string,
+}
+class UpdateGameLog extends React.Component<propTypes,updateGameLogTypes>{
     constructor(props: propTypes){
         super(props)
         this.state={
             modalOpen: false,
-            title: '',
-            hoursplayed: '',
-            difficulty: '',
-            rating: 0,
-            comments: '',
-            logID: 0
+            title: this.state.title,
+            hoursplayed: this.state.hoursplayed,
+            difficulty: this.state.difficulty,
+            rating: this.state.rating, 
+            comments: this.state.comments,
+            id: this.state.id
         }
     }
-    updateGameLogFetch(id: number){
-        fetch(`${APIURL}/gamelog/update/${id}`, {
+    updateGameLog(){
+        fetch(`${APIURL}/gamelog/update/${this.state.id}`, {
             method: 'PUT',
             body: JSON.stringify({
+                gamelog: {
                 title: this.state.title,
                 hoursplayed: this.state.hoursplayed,
                 difficulty: this.state.difficulty,
                 rating: this.state.rating,
-                comments: this.state.comments
+                comments: this.state.comments,
+                id: this.state.id}
             }),
             headers: {
                 'Content-Type': 'application/json',
@@ -47,20 +45,23 @@ class UpdateGameLog extends React.Component<propTypes, updateGameLogTypes>{
             }
         })
     }
-    handleOpen(id: number){
+    handleSubmit(){
+        this.updateGameLog()
+    }
+    handleOpen(){
         this.setState({modalOpen: true})
-        this.setState({logID: id})
+
     }
     handleCLose(){
         this.setState({modalOpen: false})
     }
-    handleClick(id: number){
-        this.setState({logID: id})
+    handleClick(id: string){
+        this.setState({id: ''})
     }
     render(){
         return(
             <div className= 'updateModal'>
-                <Button type='button' style={{border: '2px solid black'}} onClick={() => this.handleOpen(this.props.id)}>
+                <Button type='button' style={{border: '2px solid black'}} onClick={() => this.handleOpen()}>
                     Update Log
                 </Button>
                 <Dialog
@@ -71,7 +72,7 @@ class UpdateGameLog extends React.Component<propTypes, updateGameLogTypes>{
                         <p>
                             Fill In and Submit Update
                         </p>
-                        <form className='modalForm' onSubmit={() => this.updateGameLogFetch(this.props.id)}>
+                        <form className='modalForm' onSubmit={() => this.updateGameLog()}>
                         <label>Name of Game Played</label>
                         <input type ='text' onChange={(e) => this.setState({title: e.target.value})} />
                            <label>Title of Game</label>
@@ -83,6 +84,7 @@ class UpdateGameLog extends React.Component<propTypes, updateGameLogTypes>{
                            <label>Overall Rating</label>
                         <input type ='text' onChange={(e) => this.setState({comments: e.target.value})} />
                            <label>Comments On Gameplay</label>
+                           <Button type='submit' style={{margin: '10px', border: '2px solid grey'}}>Submit Update</Button>
                         </form>
                     </div>
                 </Dialog>

@@ -1,13 +1,11 @@
-import React from 'react'
 import Card from '@material-ui/core/Card'
 import { makeStyles } from '@material-ui/core/styles'
-import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import UpdateGameLog from '../UpdateGamelog'
 import UpdateCodeLog from '../UpdateCodeLog'
-
+import CreateCodeLog from '../CreateCodeLog'
 const useStyles= makeStyles({
     divContain: {
         display: 'flex',
@@ -27,14 +25,14 @@ const useStyles= makeStyles({
         marginBottom: 12,
     }
 })
-
 type gamelogForm ={
     title: string,
     hoursplayed: string,
     difficulty: string,
     rating: number,
     comments: string,
-    id: number
+    id: number,
+    token: string
 }
 type codelogForm ={
     cheat: string,
@@ -42,15 +40,18 @@ type codelogForm ={
     enables: string,
     effects: string,
     id: number,
+    token: string
 }
 type PropsForm ={
-    user: {userName: string},
+    user: string,
     userGamelog: Array<gamelogForm>,
     userCodelog: Array<codelogForm>,
     viewConductor: number,
-    deleteGamelog(id: number, token: string | null): void,
-    deleteCodelog(id: number, token: string | null): void,
-    token: string | null
+    deleteGamelog(id: number, token: string): void,
+    deleteCodelog(id: number, token: string): void,
+    getAllCodelogs(id: number, token: string): void,
+    updateCode:(id: number, cheat: string, code: string, enables: string, effects: string, token: string)=>void,
+    token: string,
 }
 const GamerLogDisplay = (props: PropsForm) => {
     let sortedGamelog = props.userGamelog.sort((n1, n2) => {
@@ -71,7 +72,6 @@ const GamerLogDisplay = (props: PropsForm) => {
         }
         return 0
     })
-
     return(
         <div className='container'>
             <div className='Gamemap'>
@@ -99,7 +99,7 @@ const GamerLogDisplay = (props: PropsForm) => {
                                         <Typography className='secondary' color='textSecondary'>
                                              {gamelog.comments}
                                         </Typography>
-                                        <UpdateGameLog token={props.token} id={gamelog.id}/>
+                                        <UpdateGameLog token={props.token}/>
                                         <Button style={{border: '2px solid grey'}} type='submit' onClick={() => props.deleteGamelog(gamelog.id, props.token)}>DELETE</Button>
                                     </CardContent>
                                 </Card>
@@ -108,7 +108,7 @@ const GamerLogDisplay = (props: PropsForm) => {
                 })}
             </div>
             <div className='codeMap'>
-                {sortedCodelog.length > 0 && sortedCodelog.map((code: codelogForm, index: number) =>{
+                {sortedCodelog.length > 0 && sortedCodelog.map((codelog: codelogForm, index: number) =>{
                     if(props.viewConductor === 0){
                         return(
                             <div className='containerCodelog' key={index}>
@@ -118,19 +118,24 @@ const GamerLogDisplay = (props: PropsForm) => {
                                           Title:
                                         </Typography>
                                         <Typography variant='h3' component='h2'>
-                                            {code.cheat}
+                                            {codelog.cheat}
                                         </Typography>
                                         <Typography className='secondary' color='textSecondary'>
-                                             {code.code}
+                                             {codelog.code}
                                         </Typography>
                                         <Typography className='secondary' color='textSecondary'>
-                                             {code.enables}
+                                             {codelog.enables}
                                         </Typography>
                                         <Typography className='secondary' color='textSecondary'>
-                                             {code.effects}
+                                             {codelog.effects}
                                         </Typography>
-                                        <UpdateCodeLog token={props.token} id={code.id}/>
-                                        <Button style={{border: '2px solid grey'}} type='submit' onClick={() => props.deleteCodelog(code.id, props.token)}>DELETE</Button>
+                                        <UpdateCodeLog
+                                        codelog={codelog}
+                                        id={codelog.id}
+                                        token={props.token}
+                                        updateCode={props.updateCode}
+                                        />
+                                        <Button style={{border: '2px solid grey'}} type='submit' onClick={() => props.deleteCodelog(codelog.id, props.token)}>DELETE</Button>
                                     </CardContent>
                                 </Card>
                                 </div>
@@ -139,6 +144,5 @@ const GamerLogDisplay = (props: PropsForm) => {
             </div>
         </div>
     )
-    
 }
 export default GamerLogDisplay

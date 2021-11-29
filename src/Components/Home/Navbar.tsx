@@ -10,10 +10,10 @@ import Button from '@material-ui/core/Button'
 
 type PropTypes = {
     updateToken (newToken: string): void,
-    token: string | null,
-    user: string | null,
+    token: string,
+    user: string,
     setUser(user: string): void,
-    clearToken(): void
+    clearToken(): void,
 }
 const styles = {
     root: {
@@ -46,7 +46,7 @@ class Navbar extends React.Component<PropTypes, {}> {
                           <Typography className='title' variant='h5' style={styles.title}>
                               Personal Profile
                           </Typography>
-                          <Button><Link className='link' to={path}>Profile</Link></Button>
+                          <Button><Link className='link' to='/gamerlog'>Profile</Link></Button>
                           <Button onClick={this.props.clearToken} style={{borderLeft: '5px', borderColor: 'red'}}><Link className='link' to='/'>Logout</Link></Button>
                       </Toolbar>
                   </AppBar>
@@ -55,9 +55,9 @@ class Navbar extends React.Component<PropTypes, {}> {
                   <div>
                       <Routes>
                       <Route path='/home'></Route>
-                      <Route path='/gamelog' element={<Gamelog token={this.props.token} user={this.props.user}/>} />
+                      <Route path='/gamelog' element={<Gamelog token={this.props.token} user={this.props.user} />} />
                       <Route path='/codelog' element={<Codes token={this.props.token} user={this.props.user}/>} />
-                      <Route path='/gamerlog' element={<GamerLog token={this.props.token} />} />
+                      <Route path='/gamerlog' element={<GamerLog token={this.props.token} user={this.props.user}/>} />
                       </Routes>
                   </div>
               </div>

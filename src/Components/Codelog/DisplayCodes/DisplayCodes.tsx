@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {Component} from 'react';
 import Card from '@material-ui/core/Card';
 import {CardContent} from '@material-ui/core/';
 import {Typography} from '@material-ui/core/'
 import UpdateCodeLog from '../../Apps/LogFunction/UpdateCodeLog';
 import APIURL from '../../../Connect/API-URL';
 import DeleteCode from '../../Apps/LogFunction/DeleteCode'
+import CreateCode from'../../Apps/LogFunction/CreateCodeLog'
 type codelogForm ={
+    codelog: [],
     cheat: string,
     code: string,
     enables: string,
@@ -14,71 +16,98 @@ type codelogForm ={
 } 
 type codelogProps ={
     userRole: string | null,
-    token: string | null ,
-    deleteCode: (id:number)=> void,
-    codelog: codelogForm[],
+    token: string,
+    updateCode: (id:number, cheat: string, code: string, enables: string, effects: string, token: string )=>void,
+    deleteCode: (id:number, token: string)=> void,
+    createCode: (id: number,cheat: string, code: string, enables: string, effects: string, token: string) => void
 }
-class DisplayCode extends React.Component<codelogProps, {}>{
-    constructor(props: any){
+class DisplayCode extends Component<codelogProps, codelogForm>{
+    constructor(props: codelogProps){
         super(props);
         this.state ={
             codelog: [],
-        }
+                 cheat: '',
+                 code: '',
+                 enables: '',
+                 effects: '',
+                 id: 0
+             }
     }
     componentDidMount() {
         this.getAllCodelogs();
     }
     getAllCodelogs(){
-        let token = localStorage.getItem('token')
         fetch(`${APIURL}/codelog/mine`, {
             method: 'GET',
             headers: {
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`
+                'Authorization':`Bearer ${this.props.token}`
             }
         })
         .then(res => res.json())
         .then(data => {
             this.setState({
-                codelog: data
+                codelog: data,
+                cheat: data.cheat,
+                code: data.code,
+                effects: data.effects,
+                enables: data.enables,
             });
             console.log(data)
         })
-    }                            
-render() {
-    return this.props.codelog.map((codelog: codelogForm, index: number) =>(
-             <div className='container' key={index}>
-                        <Card className='main'>
-                            <CardContent>
-                                <Typography className='title' color="textPrimary" gutterBottom>
-                                    Code Name:
-                                </Typography>
-                                <Typography variant='h5' component='h2'>
-                                    {codelog.cheat}
-                                </Typography>
-                                <Typography className='second' color="textSecondary">
-                                    {codelog.code}
-                                </Typography>
-                                <Typography className='second' color="textSecondary">
-                                    {codelog.enables}
-                                </Typography>
-                                <Typography className='second' color="textSecondary">
-                                    {codelog.effects}
-                                </Typography>
-                                <div className='modalDiv'>
-                                    <UpdateCodeLog
-                                     token={this.props.token}
-                                     id={codelog.id}
+    } 
+
+    codeLogMap(){
+        return this.state.codelog.map((codelog: codelogForm, index: number) =>(
+            <div className='container' key={index}>
+                       <Card className='main'>
+                           <CardContent>
+                               <Typography className='title' color="textPrimary" gutterBottom>
+                                   Code Name:
+                               </Typography>
+                               <Typography variant='h5' component='h2'>
+                                   {codelog.cheat}
+                               </Typography>
+                               <Typography className='second' color="textSecondary">
+                                   {codelog.code}
+                               </Typography>
+                               <Typography className='second' color="textSecondary">
+                                   {codelog.enables}
+                               </Typography>
+                               <Typography className='second' color="textSecondary">
+                                   {codelog.effects}
+                               </Typography>
+                               <div className='modalDiv'>
+                                   <UpdateCodeLog
+                                    updateCode={this.props.updateCode}
+                                    id={codelog.id}
+                                    token={this.props.token}
+                                    codelog={codelog}
+                                   />
+                                   <DeleteCode
+                                    id={codelog.id}
+                                    deleteCode={this.props.deleteCode}
+                                    token={this.props.token}
                                     />
-                                    <DeleteCode
-                                     id={codelog.id}
-                                     deleteCode={this.props.deleteCode}
-                                     />
-                                </div>
-                            </CardContent>
-                        </Card>
-                        </div>
-             ))}
+                                    <CreateCode
+                                    createCode={this.props.createCode}
+                                    id={codelog.id}
+                                    codelog={codelog}
+                                    token={this.props.token}
+                                    />
+                               </div>
+                           </CardContent>
+                       </Card>
+                       </div>
+            ))
+    }                          
+render() {
+    return(
+        <div>
+            {this.codeLogMap()}
+        </div>
+    )
+ }
 }
 
 

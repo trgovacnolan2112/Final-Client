@@ -3,7 +3,7 @@ import APIURL from '../../Connect/API-URL'
 import {Button} from '@material-ui/core'
 
 type userTypes = {
-    user: {},
+    user: string,
     username: string,
     userlogin: string,
     passwordlogin: string,
@@ -16,13 +16,12 @@ class Login extends React.Component<propTypes, userTypes>{
     constructor(props: propTypes) {
         super(props)
         this.state = {
-            user: {},
+            user: '',
             username: '',
             userlogin: '',
             passwordlogin: '',
         }
     }
-
     handleSubmitLogin = (e:any) =>{
         e.preventDefault()
         fetch(`${APIURL}/user/login`, {

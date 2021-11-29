@@ -1,49 +1,37 @@
 import React from 'react'
 import APIURL from '../../../Connect/API-URL'
-
-type propTypes ={
-    token: string | null
-}
-
 type createCodelogEntry ={
     modalOpen: boolean,
-    cheat: String,
-    code: String,
-    enables: String,
-    effects: String,
+    cheat: string,
+    code: string,
+    enables: string,
+    effects: string,
+    id: number
 }
-
+type propTypes ={
+    token: string
+    createCode: (id: number, cheat: string, code: string, enables: string, effects: string, token: string) => void,
+    id: number,
+    codelog: any
+}
 class CreateCodeLog extends React.Component<propTypes, createCodelogEntry>{
     constructor(props: propTypes) {
         super(props)
         this.state ={
             modalOpen: false,
-            cheat: '',
-            code: '',
-            enables: '',
-            effects: ''
+            cheat: this.props.codelog.cheat,
+            code: this.props.codelog.code,
+            enables: this.props.codelog.enables,
+            effects: this.props.codelog.effects,
+            id: this.props.codelog.id
 
         }
     }
-    createCodelogFetch(){
-        fetch(`${APIURL}/codelog/create`,{
-            method: 'POST',
-            body:JSON.stringify({
-                modalOpen: false,
-                cheat: '',
-                code: '',
-                enables: '',
-                effects: ''
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization':`${this.props.token}`
-            }
-        })
-        .catch(err => console.log(err))
-    }
-    handleSubmit(event: React.FormEvent<HTMLFormElement>){
-        this.createCodelogFetch()
+    handleSubmit(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault()
+        console.log('inside handle submit')
+        this.props.createCode(this.props.codelog.id,this.state.cheat,this.state.code,this.state.enables,this.state.effects, this.props.token)
+        this.handleClose()
     }
     handleOpen(){
         this.setState({modalOpen: true})

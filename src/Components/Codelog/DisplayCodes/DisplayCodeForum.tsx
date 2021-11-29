@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import Card from '@material-ui/core/Card';
 import {CardContent} from '@material-ui/core/';
 import {Typography} from '@material-ui/core/'
@@ -12,24 +12,27 @@ type codelogForm ={
     effects: string,
     id: number,
 }
-
 type codelogAdminProps ={
     userRole: string | null,
-    token: string | null,
-    deleteCodelog: (id: number)=> void,
+    token: string,
+    deleteCode: (id: number)=> void,
+    updateCode: (id: number, token: string)=> void,
     codelog: codelogForm[]
 }
-class DisplayForumCode extends React.Component<codelogAdminProps, {}>{
+type stateType={
+    codelogforum: []
+}
+class DisplayForumCode extends Component<codelogAdminProps, stateType>{
     constructor(props: any){
         super(props);
         this.state ={
-            codelog: [],
+            codelogforum: [],
         }
     }
     componentDidMount() {
-        this.getAllCodelogs();
+        this.getForumCodelogs();
     }
-    getAllCodelogs(){
+    getForumCodelogs(){
         fetch(`${APIURL}/codelog/forum`, {
             method: 'GET',
             headers: {
@@ -40,16 +43,13 @@ class DisplayForumCode extends React.Component<codelogAdminProps, {}>{
         .then(res => res.json())
         .then(data => {
             this.setState({
-                codelog: data
+                codelogforum: data
             });
             console.log(data)
         })
     }
-
-
-CodeForum(){
-    return this.props.codelog.map((codelog: codelogForm, index: number) =>{
-                return(
+ codeForum(){
+    return this.state.codelogforum.map((codelog: codelogForm, index: number)=>(
                     <div className='container' key={index}>
                         <Card className='main'>
                             <CardContent>
@@ -70,23 +70,26 @@ CodeForum(){
                                 </Typography>
                                 <div className='modalDiv'>
                                     <UpdateCodeLog
+                                     codelog={codelog}
+                                     id={codelog.id}
                                      token={this.props.token}
-                                     id={codelog.id}/>
+                                     updateCode={this.props.updateCode}
+                                    />
                                      <DeleteCode
                                      id={codelog.id}
-                                     deleteCode={this.props.deleteCodelog}
+                                     deleteCode={this.props.deleteCode}
+                                     token={this.props.token}
                                      />
                                 </div>
                             </CardContent>
                         </Card>
                         </div>
-                )
-            })
+    ))
     }
 render() {
     return (
         <div>
-            {this.CodeForum()}
+            {this.codeForum()}
         </div>
     )
 }

@@ -4,7 +4,7 @@ import Signup from '../Auth/Signup'
 
 type PropTypes = {
     updateToken (newToken: string): void,
-    token: string | null,
+    token: string,
     user: string | null,
     setUser(user: string): void,
     clearToken(): void,

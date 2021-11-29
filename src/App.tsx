@@ -6,7 +6,7 @@ import Main from './Components/Home/Main';
 
 type tokenTypes = {
   sessionToken: string | null,
-  user: string | null
+  user: string | null,
 }
 
 class App extends React.Component<{}, tokenTypes>{
@@ -38,15 +38,15 @@ class App extends React.Component<{}, tokenTypes>{
         <Router>
           <Navbar
             updateToken={this.updateToken}
-            token={this.state.sessionToken}
-            user={this.state.user}
+            token={this.state.sessionToken == null ? '': this.state.sessionToken}
+            user={this.state.user == null ? '': this.state.user}
             setUser={this.setUser}
             clearToken={this.clearToken}
           />
           <Main
           updateToken={this.updateToken}
-          token={this.state.sessionToken}
-          user={this.state.user}
+          token={this.state.sessionToken == null ? '': this.state.sessionToken}
+          user={this.state.user == null ? '': this.state.user}
           setUser={this.setUser}
           clearToken={this.clearToken}
           />

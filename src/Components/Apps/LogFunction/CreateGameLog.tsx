@@ -2,7 +2,7 @@ import React from 'react'
 import APIURL from '../../../Connect/API-URL'
 
 type propTypes ={
-    token: string | null
+    token: string
 }
 
 type createGamelogEntry ={
@@ -26,15 +26,16 @@ class CreateGameLog extends React.Component<propTypes, createGamelogEntry>{
             comments: ''
         }
     }
-    createGamelogFetch(){
-        fetch(`${APIURL}/codelog/create`,{
+    createGamelog(){
+        fetch(`${APIURL}/gamelog/create`,{
             method: 'POST',
             body:JSON.stringify({
+                gamelog :{
                 modalOpen: false,
                 title: '',
                 hoursplayed: '',
                 rating: '',
-                comments: ''
+                comments: ''}
             }),
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +45,7 @@ class CreateGameLog extends React.Component<propTypes, createGamelogEntry>{
         .catch(err => console.log(err))
     }
     handleSubmit(event: React.FormEvent<HTMLFormElement>){
-        this.createGamelogFetch()
+        this.createGamelog()
     }
     handleOpen(){
         this.setState({modalOpen: true})

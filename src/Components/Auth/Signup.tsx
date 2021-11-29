@@ -3,7 +3,7 @@ import APIURL from '../../Connect/API-URL'
 import {Button} from '@material-ui/core'
 
 type userTypes = {
-    user: {},
+    user: string,
     username: string,
     email: string,
     usersignup: string,
@@ -17,7 +17,7 @@ class Signup extends React.Component<propTypes, userTypes>{
     constructor(props: propTypes) {
         super(props)
         this.state = {
-            user: {},
+            user: '',
             username: '',
             email: '',
             usersignup: '',

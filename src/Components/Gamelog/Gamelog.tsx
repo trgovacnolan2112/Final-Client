@@ -1,7 +1,7 @@
 import React from "react";
 import APIURL from "../../Connect/API-URL";
-import DisplayGamelog from './DisplayGamelog/DisplayGamelog';
 import DisplayGamelogForum from './DisplayGamelog/DisplayGamelogForum'
+import DisplayGamelog from './DisplayGamelog/DisplayGamelog';
 
 type gamelogForm ={
     title: string,
@@ -18,8 +18,8 @@ type gamelogTypes ={
 }
 
 type propTypes={
-    token: string | null,
-    user: string | null
+    token: string,
+    user: string | null,
 }
 
 class Gamelog extends React.Component<propTypes,gamelogTypes>{
@@ -31,10 +31,11 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
         }
     }
     getAllGamelogs(){
-        fetch(`${APIURL}/gamelog/mine}`,{
+        fetch(`${APIURL}/gamelog/mine`,{
             method: 'GET',
             headers: {
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${this.props.token}`
             }
         })
         .then(res => res.json())
@@ -46,10 +47,11 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
         })
     }
     getForumGamelogs(){
-        fetch(`${APIURL}/gamelog/forum}`,{
+        fetch(`${APIURL}/gamelog/forum`,{
             method: 'GET',
             headers: {
-                'Content-Type':'application/json'
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${this.props.token}`
             }
         })
         .then(res => res.json())
@@ -60,12 +62,12 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
             console.log(data)
         })
     }
-    deleteGamelog(id: number) {
+    deleteGame(id: number, token: string) {
         fetch(`${APIURL}/gamelog/${id}`,{
             method: 'DELETE',
             headers: {
-                'Contente-Type':'application/json',
-                'Authorization': `${this.props.token}`
+                'Content-Type':'application/json',
+                'Authorization': `${token}`
             }
         })
         .catch(err => console.log(err))
@@ -80,17 +82,17 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
         return(
             <div className='container'>
                 <DisplayGamelog
-                gamelogResults={this.state.gamelog}
-                deleteGamelog={this.deleteGamelog}
+                gamelog={this.state.gamelog}
+                deleteGame={this.deleteGame}
                 userRole={this.props.token}
                 token={this.props.token}
                 />
-                <DisplayGamelogForum
-                gamelogResultsForum={this.state.gamelog}
-                deleteGamelog={this.deleteGamelog}
+                {/* <DisplayGamelogForum
+                gamelog={this.state.gamelog}
+                deleteGame={this.deleteGame}
                 userRole={this.props.token}
                 token={this.props.token}
-                />
+                /> */}
 
             </div>
         )

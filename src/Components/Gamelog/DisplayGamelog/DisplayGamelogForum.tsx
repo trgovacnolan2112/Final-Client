@@ -3,7 +3,8 @@ import Card from '@material-ui/core/Card';
 import {CardContent} from '@material-ui/core/'
 import {Typography} from '@material-ui/core';
 import UpdateGameLog from '../../Apps/LogFunction/UpdateGamelog'
-
+import DeleteGame from'../../Apps/LogFunction/DeleteGame'
+import APIURL from '../../../Connect/API-URL'
 type gamelogForm ={
     title: string,
     hoursplayed: string,
@@ -14,58 +15,44 @@ type gamelogForm ={
 }
 
 type gamelogAdminProps ={
-    gamelogResultsForum: Array<gamelogForm>,
-    deleteGamelog(id: number): void,
-    userRole: string |null,
-    token: string | null,
+    userRole: string ,
+    token: string,
+    deleteGame: (id: number, token: string)=> void,
+    gamelog: gamelogForm[],
 } 
 
-type modalType ={
-    modalOpen: boolean
+type stateType ={
+    gamelogs: []
 }
-
-type modalProps ={
-    id: number,
-    deleteGamelog(id: number): void
-}
-
-
-class Modal extends React.Component<modalProps, modalType>{
-    constructor(props: modalProps) {
+class DisplayForumGame extends React.Component<gamelogAdminProps, stateType>{
+    constructor(props: any) {
         super(props)
         this.state={
-            modalOpen: false
+            gamelogs: []
         }
     }
-    handleOpen(){
-        this.setState({modalOpen: true})
-    }
-    handleClose(){
-        this.setState({modalOpen: false})
-    }
-    render(){
-        return(
-            <div>
-                <button style ={{border: '1px solid grey'}} onClick={()=> this.handleOpen()}>Delete Log</button>
-                <dialog
-                open={this.state.modalOpen}>
-                    <div style={{padding: '10px'}}>
-                        <h2>Confirm</h2>
-                        <button style={{border: '2px solid red'}} onClick={() =>this.props.deleteGamelog(this.props.id)}>YES</button>
-                        <button style={{border: '2px solid red'}} onClick={() =>this.handleOpen}>NO</button>
-                    </div>
-                </dialog>
-            </div>
-        )
-    }
-}
+   componentDidMount(){
+       this.getAllGamelogs();
+   }
+   getAllGamelogs(){
+       fetch(`${APIURL}/gamelog/forum`,{
+           method: 'GET',
+           headers: {
+               'Content-Type':'application/json',
+               'Authorization':`Bearer ${this.props.token}`
+           }
+       })
+       .then(res => res.json())
+       .then(data => {
+           this.setState({
+               gamelogs: data
+           });
+           console.log(data)
+       })
+   }  
 
-
-const DisplayGamelogForum = (props: gamelogAdminProps) => {
-    return(
-        <div>
-            {props.gamelogResultsForum.map((gamelog: gamelogForm, index: number) =>{
-                return(
+gameForum(){
+    return this.state.gamelogs.map((gamelog: gamelogForm, index: number) =>(
                     <div className='container' key={index}>
                         <Card className='main'>
                             <CardContent>
@@ -89,20 +76,27 @@ const DisplayGamelogForum = (props: gamelogAdminProps) => {
                                 </Typography>
                                 <div className='modalDiv'>
                                     <UpdateGameLog
-                                    token={props.token}
-                                    id={gamelog.id}/>
-                                    <Modal
+                                    token={this.props.token}
+                                    />
+                                    <DeleteGame
                                     id={gamelog.id}
-                                    deleteGamelog={props.deleteGamelog}>
-                                    </Modal>
+                                    deleteGame={this.props.deleteGame}
+                                    token={this.props.token}
+                                    />
                                 </div>
                             </CardContent>
                         </Card>
                         </div>
-                )
-            })}
-        </div>
-    )
+    ))
+        }
+    render() {
+        return (
+            <div>
+                {this.gameForum()}
+            </div>
+        )
+    }
 }
 
-export default DisplayGamelogForum
+
+export default DisplayForumGame
