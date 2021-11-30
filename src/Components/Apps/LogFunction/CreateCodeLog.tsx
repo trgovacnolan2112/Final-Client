@@ -1,36 +1,30 @@
-import React from 'react'
-import APIURL from '../../../Connect/API-URL'
+import React, {Component} from 'react'
 type createCodelogEntry ={
     modalOpen: boolean,
     cheat: string,
     code: string,
     enables: string,
     effects: string,
-    id: number
 }
 type propTypes ={
-    token: string
-    createCode: (id: number, cheat: string, code: string, enables: string, effects: string, token: string) => void,
-    id: number,
-    codelog: any
+    token: string,
+    createCode: (cheat: string, code: string, enables: string, effects: string, token:string) => void,
 }
-class CreateCodeLog extends React.Component<propTypes, createCodelogEntry>{
+class CreateCodeLog extends Component<propTypes, createCodelogEntry>{
     constructor(props: propTypes) {
         super(props)
         this.state ={
             modalOpen: false,
-            cheat: this.props.codelog.cheat,
-            code: this.props.codelog.code,
-            enables: this.props.codelog.enables,
-            effects: this.props.codelog.effects,
-            id: this.props.codelog.id
-
+            cheat: '',
+            code: '',
+            enables: '',
+            effects: '',
         }
     }
     handleSubmit(e: React.FormEvent<HTMLFormElement>){
         e.preventDefault()
         console.log('inside handle submit')
-        this.props.createCode(this.props.codelog.id,this.state.cheat,this.state.code,this.state.enables,this.state.effects, this.props.token)
+        this.props.createCode(this.state.cheat,this.state.code,this.state.enables,this.state.effects, this.props.token)
         this.handleClose()
     }
     handleOpen(){
@@ -70,5 +64,4 @@ class CreateCodeLog extends React.Component<propTypes, createCodelogEntry>{
         )
     }
 }
-
 export default CreateCodeLog

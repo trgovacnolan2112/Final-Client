@@ -7,7 +7,6 @@ import AppBar  from '@material-ui/core/AppBar'
 import Toolbar  from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
-
 type PropTypes = {
     updateToken (newToken: string): void,
     token: string,
@@ -27,7 +26,6 @@ const styles = {
         font: 'bold'
     }
 }
-
 class Navbar extends React.Component<PropTypes, {}> {
   render() {
       let path
@@ -55,7 +53,7 @@ class Navbar extends React.Component<PropTypes, {}> {
                   <div>
                       <Routes>
                       <Route path='/home'></Route>
-                      <Route path='/gamelog' element={<Gamelog token={this.props.token} user={this.props.user} />} />
+                      <Route path='/gamelog' element={<Gamelog token={this.props.token} user={this.props.user}/>} />
                       <Route path='/codelog' element={<Codes token={this.props.token} user={this.props.user}/>} />
                       <Route path='/gamerlog' element={<GamerLog token={this.props.token} user={this.props.user}/>} />
                       </Routes>

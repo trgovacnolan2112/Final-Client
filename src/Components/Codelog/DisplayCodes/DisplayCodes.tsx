@@ -6,6 +6,14 @@ import UpdateCodeLog from '../../Apps/LogFunction/UpdateCodeLog';
 import APIURL from '../../../Connect/API-URL';
 import DeleteCode from '../../Apps/LogFunction/DeleteCode'
 import CreateCode from'../../Apps/LogFunction/CreateCodeLog'
+type States ={
+    codelog: [],
+    cheat: string,
+    code: string,
+    enables: string,
+    effects: string,
+    id: number,
+}
 type codelogForm ={
     codelog: [],
     cheat: string,
@@ -19,9 +27,8 @@ type codelogProps ={
     token: string,
     updateCode: (id:number, cheat: string, code: string, enables: string, effects: string, token: string )=>void,
     deleteCode: (id:number, token: string)=> void,
-    createCode: (id: number,cheat: string, code: string, enables: string, effects: string, token: string) => void
 }
-class DisplayCode extends Component<codelogProps, codelogForm>{
+class DisplayCode extends Component<codelogProps, States>{
     constructor(props: codelogProps){
         super(props);
         this.state ={
@@ -56,7 +63,6 @@ class DisplayCode extends Component<codelogProps, codelogForm>{
             console.log(data)
         })
     } 
-
     codeLogMap(){
         return this.state.codelog.map((codelog: codelogForm, index: number) =>(
             <div className='container' key={index}>
@@ -87,12 +93,6 @@ class DisplayCode extends Component<codelogProps, codelogForm>{
                                    <DeleteCode
                                     id={codelog.id}
                                     deleteCode={this.props.deleteCode}
-                                    token={this.props.token}
-                                    />
-                                    <CreateCode
-                                    createCode={this.props.createCode}
-                                    id={codelog.id}
-                                    codelog={codelog}
                                     token={this.props.token}
                                     />
                                </div>

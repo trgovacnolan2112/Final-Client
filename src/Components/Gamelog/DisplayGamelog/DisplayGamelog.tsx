@@ -5,28 +5,34 @@ import {Typography} from '@material-ui/core';
 import UpdateGameLog from '../../Apps/LogFunction/UpdateGamelog'
 import APIURL from '../../../Connect/API-URL'
 import DeleteGame from '../../Apps/LogFunction/DeleteGame'
+import CreateGame from '../../Apps/LogFunction/CreateGameLog';
 type gamelogForm ={
+    gamelog: [],
     title: string,
     hoursplayed: string,
     difficulty: string,
-    rating: number,
+    rating:string,
     comments: string,
     id: number
 }
 type gamelogProps ={
     userRole: string |null,
     token: string,
+    updateGame: (id: number, title: string, hoursplayed: string, difficulty: string, rating:string, comments: string, token: string)=> void,
     deleteGame: (id: number, token: string)=> void,
-    gamelog: gamelogForm[]
+    createGame: (title: string, hoursplayed: string, difficulty: string, rating:string, comments: string, token: string)=> void
 }
-type stateType = {
-    gamelogs:[]
-}
-class DisplayGame extends React.Component<gamelogProps, stateType>{
+class DisplayGame extends React.Component<gamelogProps, gamelogForm>{
     constructor(props: any) {
         super(props)
         this.state={
-            gamelogs: []
+            gamelog: [],
+            title: '',
+            hoursplayed: '',
+            difficulty: '',
+            rating: '',
+            comments: '',
+            id: 0
         }
     }
     componentDidMount() {
@@ -43,13 +49,18 @@ class DisplayGame extends React.Component<gamelogProps, stateType>{
         .then(res => res.json())
         .then(data => {
             this.setState({
-                gamelogs: data
+                gamelog: data,
+                title: data.title,
+                hoursplayed: data.hoursplayed,
+                difficulty: data.difficulty,
+                rating: data.rating,
+                comments: data.comments
             });
             console.log(data)
         })
     } 
 gameLogMap(){
-    return this.state.gamelogs.map((gamelog: gamelogForm, index: number) =>(
+    return this.state.gamelog.map((gamelog: gamelogForm, index: number) =>(
                     <div className='container' key={index}>
                         <Card className='main'>
                             <CardContent>
@@ -73,13 +84,19 @@ gameLogMap(){
                                 </Typography>
                                 <div className='modalDiv'>
                                     <UpdateGameLog
+                                    updateGame={this.props.updateGame}
                                     token={this.props.token}
+                                    id={gamelog.id}
+                                    gamelog={gamelog}
                                     />
                                     <DeleteGame
                                     id={gamelog.id}
                                     deleteGame={this.props.deleteGame}
                                     token={this.props.token}
                                     />
+                                    <CreateGame
+                                    createGame={this.props.createGame}
+                                    token={this.props.token}/>
                                 </div>
                             </CardContent>
                         </Card>

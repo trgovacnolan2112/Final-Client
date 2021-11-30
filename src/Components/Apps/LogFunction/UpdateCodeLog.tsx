@@ -10,7 +10,7 @@ type updateCodeLogForm = {
     id: number
 }
 type codelogProps ={
-    token: string
+    token: string,
     updateCode: (id: number, cheat: string, code: string, enables: string, effects: string, token: string) => void,
     id: number,
     codelog: any

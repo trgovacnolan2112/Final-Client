@@ -4,7 +4,7 @@ type modalType ={
 }
 type modalProps ={
     id: number,
-    deleteGame(id: number, token: string): void,
+    deleteGame: (id: number, token: string)=>void,
     token: string
 }
 class DeleteGame extends React.Component<modalProps, modalType>{
@@ -22,7 +22,6 @@ class DeleteGame extends React.Component<modalProps, modalType>{
     }
     deleteGamelog(){
         this.props.deleteGame(this.props.id,this.props.token)
-        window.location.reload()
     }
     render(){
         return(

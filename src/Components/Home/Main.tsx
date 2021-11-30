@@ -1,7 +1,6 @@
 import React from 'react'
 import Login from '../Auth/Login'
 import Signup from '../Auth/Signup'
-
 type PropTypes = {
     updateToken (newToken: string): void,
     token: string,
@@ -9,13 +8,11 @@ type PropTypes = {
     setUser(user: string): void,
     clearToken(): void,
 }
-
-
 class Main extends React.Component<PropTypes , {}> {
 render() {
 let path
       if(this.props.token !==''){
-          path='/GamerLog'
+          path='/Main'
       }else{
           path='/Main'
       }

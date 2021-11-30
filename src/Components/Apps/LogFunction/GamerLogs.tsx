@@ -1,9 +1,8 @@
 import React, {Component} from 'react'
 import GamerLogDisplay from './Display/GamerLogsDisplay'
 import Button from '@material-ui/core/Button'
-import CreateCodeLog from './CreateCodeLog'
-import CreateGameLog from './CreateGameLog'
 import APIURL from '../../../Connect/API-URL'
+import CreateGamelog from '../LogFunction/CreateGameLog'
 type propTypes= {
     token: string,
     user: string,
@@ -12,7 +11,7 @@ type gamelogForm ={
     title: string,
     hoursplayed: string,
     difficulty: string,
-    rating: number,
+    rating: string,
     comments: string,
     id: number,
     token: string
@@ -32,7 +31,6 @@ type userTypes ={
     userCodelog: Array<codelogForm>,
     list: number,
 }
-
 class GamerLog extends Component<propTypes, userTypes>{
     constructor(props: propTypes){
         super(props)
@@ -43,7 +41,7 @@ class GamerLog extends Component<propTypes, userTypes>{
             list: 0
         }
     }
-    createCode(token: string,cheat: string, code: string, enables: string, effects: string, id: number){
+    createCode(cheat: string, code: string, enables: string, effects: string, token: string){
         fetch(`${APIURL}/codelog/create`,{
             method: 'POST',
             body:JSON.stringify({
@@ -52,7 +50,26 @@ class GamerLog extends Component<propTypes, userTypes>{
                 code: code,
                 enables: enables,
                 effects: effects,
-                id: id}
+                }
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':`Bearer ${token}`
+            }
+        })
+        .catch(err => console.log(err))
+    }
+    createGame(title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string){
+        fetch(`${APIURL}/gamelog/create`,{
+            method: 'POST',
+            body:JSON.stringify({
+                gamelog :{
+                title: title,
+                hoursplayed: hoursplayed,
+                difficulty: difficulty,
+                rating: rating,
+                comments: comments,
+                }
             }),
             headers: {
                 'Content-Type': 'application/json',
@@ -77,34 +94,23 @@ class GamerLog extends Component<propTypes, userTypes>{
             console.log(data)
         })
     }
-    fetchUser(){
-        fetch(`${APIURL}/user`,{
+    getGame(){
+        fetch(`${APIURL}/gamelog/mine`,{
             method: 'GET',
-            headers: new Headers ({
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${this.props.token}`
-            })
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization':`Bearer ${this.props.token}`
+            }
         })
         .then(res => res.json())
         .then(data => {
             this.setState({
-                user: data,
-                userGamelog: data.gamelog,
-                userCodelog: data.codelog
-            })
+                userGamelog: data
+            });
+            console.log(data)
         })
     }
-    deleteGame(id: number, token: string) {
-        fetch(`${APIURL}/gamelog/${id}`,{
-            method: 'DELETE',
-            headers: {
-                'Content-Type':'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        })
-        .catch(err => console.log(err))
-    }
-    updateCode(id: number, cheat: string, code: string, enables: string, effects: string, token: string ){
+    updateCode(id: number, cheat: string, code: string, enables: string, effects: string){
         fetch(`${APIURL}/codelog/update/${id}`, {
             method: 'PUT',
             body: JSON.stringify({
@@ -117,30 +123,56 @@ class GamerLog extends Component<propTypes, userTypes>{
             }),
             headers: new Headers({
                 'Content-Type':'application/json',
-                'Authorization':`Bearer ${token}`
+                'Authorization':`Bearer ${this.props.token}`
             })
         })
             .then(response => response.json())
+    }
+    updateGame(id: number, title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string){
+        fetch(`${APIURL}/gamelog/update/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                gamelog: {
+                title: title,
+                hoursplayed: hoursplayed,
+                difficulty: difficulty,
+                rating: rating,
+                comments: comments,
+                id: id}
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':`Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data=> console.log(data))
+        .catch(err => console.log(err))
     }
     deleteCode(id: number){
         fetch(`${APIURL}/codelog/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type':'application/json',
-                'Authorization': `${this.props.token}`
+                'Authorization': `Bearer ${this.props.token}`
             }
         })
         .catch(err => console.log(err))
     }
-    componentDidMount() {
-        this.fetchUser()
+    deleteGame(id: number, token: string) {
+        fetch(`${APIURL}/gamelog/${id}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type':'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .catch(err => console.log(err))
     }
     render(){
         return(
             <div>
                 <div className='ModalDiv'>
-                    <CreateGameLog token={this.props.token}/>
-                    <CreateCodeLog token={this.props.token}/>
                 </div>
                 <div className='viewConductor' style={{display: 'flex', justifyContent: 'center'}}>
                 <Button style={{border: '2px solid grey', marginRight: '2px'}} onClick={() => this.setState({list: 0})}>My Games</Button>
@@ -154,7 +186,10 @@ class GamerLog extends Component<propTypes, userTypes>{
                  deleteCodelog={this.deleteCode}
                  deleteGamelog={this.deleteGame}
                  updateCode={this.updateCode}
+                 updateGame={this.updateGame}
                  getAllCodelogs={this.getCode}
+                 createCode={this.createCode}
+                 createGame={this.createGame}
                  token={this.props.token}
                  />
             </div>

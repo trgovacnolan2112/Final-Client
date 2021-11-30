@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import UpdateGameLog from '../UpdateGamelog'
 import UpdateCodeLog from '../UpdateCodeLog'
 import CreateCodeLog from '../CreateCodeLog'
+import CreateGameLog from '../CreateGameLog'
 const useStyles= makeStyles({
     divContain: {
         display: 'flex',
@@ -29,7 +30,7 @@ type gamelogForm ={
     title: string,
     hoursplayed: string,
     difficulty: string,
-    rating: number,
+    rating:string,
     comments: string,
     id: number,
     token: string
@@ -50,7 +51,10 @@ type PropsForm ={
     deleteGamelog(id: number, token: string): void,
     deleteCodelog(id: number, token: string): void,
     getAllCodelogs(id: number, token: string): void,
+    updateGame:(id: number, title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string) => void,
+    createGame:(title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string) => void,
     updateCode:(id: number, cheat: string, code: string, enables: string, effects: string, token: string)=>void,
+    createCode:(cheat: string, code: string, enables: string, effects: string, token: string)=>void,
     token: string,
 }
 const GamerLogDisplay = (props: PropsForm) => {
@@ -99,7 +103,14 @@ const GamerLogDisplay = (props: PropsForm) => {
                                         <Typography className='secondary' color='textSecondary'>
                                              {gamelog.comments}
                                         </Typography>
-                                        <UpdateGameLog token={props.token}/>
+                                        <UpdateGameLog 
+                                        updateGame={props.updateGame}
+                                        gamelog={gamelog}
+                                        id={gamelog.id}
+                                        token={props.token}/>
+                                        <CreateGameLog
+                                        createGame={props.createGame}
+                                        token={props.token}/>
                                         <Button style={{border: '2px solid grey'}} type='submit' onClick={() => props.deleteGamelog(gamelog.id, props.token)}>DELETE</Button>
                                     </CardContent>
                                 </Card>
@@ -135,6 +146,10 @@ const GamerLogDisplay = (props: PropsForm) => {
                                         token={props.token}
                                         updateCode={props.updateCode}
                                         />
+                                       <CreateCodeLog
+                                       token={props.token}
+                                       createCode={props.createCode}
+                                       />
                                         <Button style={{border: '2px solid grey'}} type='submit' onClick={() => props.deleteCodelog(codelog.id, props.token)}>DELETE</Button>
                                     </CardContent>
                                 </Card>

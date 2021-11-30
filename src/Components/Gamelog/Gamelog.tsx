@@ -2,27 +2,24 @@ import React from "react";
 import APIURL from "../../Connect/API-URL";
 import DisplayGamelogForum from './DisplayGamelog/DisplayGamelogForum'
 import DisplayGamelog from './DisplayGamelog/DisplayGamelog';
-
+import CreateGameLog from "../Apps/LogFunction/CreateGameLog";
 type gamelogForm ={
     title: string,
     hoursplayed: string,
     difficulty: string,
-    rating: number,
+    rating:string,
     comments: string,
     id: number
 }
-
-type gamelogTypes ={
+type stateTypes ={
     gamelog: Array<gamelogForm>
     modalOpen: boolean
 }
-
 type propTypes={
     token: string,
     user: string | null,
 }
-
-class Gamelog extends React.Component<propTypes,gamelogTypes>{
+class Gamelog extends React.Component<propTypes,stateTypes>{
     constructor(props: propTypes){
         super(props)
         this.state={
@@ -30,7 +27,7 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
             modalOpen: false
         }
     }
-    getAllGamelogs(){
+    getGame(){
         fetch(`${APIURL}/gamelog/mine`,{
             method: 'GET',
             headers: {
@@ -45,6 +42,25 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
             });
             console.log(data)
         })
+    }
+    createGame(title: string, hoursplayed: string, difficulty: string, rating:string, comments: string, token: string){
+        fetch(`${APIURL}/gamelog/create`,{
+            method: 'POST',
+            body:JSON.stringify({
+                gamelog :{
+                title: title,
+                difficulty: difficulty,
+                hoursplayed: hoursplayed,
+                rating: +rating,
+                comments: comments,
+                }
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':`Bearer ${token}`
+            }
+        })
+        .catch(err => console.log(err))
     }
     getForumGamelogs(){
         fetch(`${APIURL}/gamelog/forum`,{
@@ -67,23 +83,48 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
             method: 'DELETE',
             headers: {
                 'Content-Type':'application/json',
-                'Authorization': `${token}`
+                'Authorization': `Bearer ${token}`
             }
         })
         .catch(err => console.log(err))
     }
-
+    updateGame(id: number, title: string, hoursplayed: string, difficulty: string, rating:string, comments: string, token: string){
+        fetch(`${APIURL}/gamelog/update/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+                gamelog: {
+                title: title,
+                hoursplayed: hoursplayed,
+                difficulty: difficulty,
+                rating: rating,
+                comments: comments,
+                id: id}
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization':`Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(data=> console.log(data))
+        .catch(err => console.log(err))
+    }
     componentDidMount(){
-        this.getAllGamelogs()
+        this.getGame()
         this.getForumGamelogs()
         console.log(this.props.user)
     }
     render(){
         return(
             <div className='container'>
+                <CreateGameLog 
+                token={this.props.token}
+                createGame={this.createGame}
+                />
                 <DisplayGamelog
-                gamelog={this.state.gamelog}
                 deleteGame={this.deleteGame}
+                updateGame={this.updateGame}
+                createGame={this.createGame}
                 userRole={this.props.token}
                 token={this.props.token}
                 />
@@ -93,7 +134,6 @@ class Gamelog extends React.Component<propTypes,gamelogTypes>{
                 userRole={this.props.token}
                 token={this.props.token}
                 /> */}
-
             </div>
         )
     }

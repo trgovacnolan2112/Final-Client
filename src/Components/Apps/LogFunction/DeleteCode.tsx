@@ -23,7 +23,6 @@ class DeleteCode extends Component<modalProps, modalType>{
     deleteCodelog(){
         this.props.deleteCode(this.props.id, this.props.token)
         console.log('im here')
-        window.location.reload()
     }
     render(){
         return(

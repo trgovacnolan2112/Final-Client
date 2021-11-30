@@ -3,12 +3,10 @@ import './App.css';
 import Navbar from './Components/Home/Navbar';
 import {BrowserRouter as Router} from 'react-router-dom'
 import Main from './Components/Home/Main';
-
 type tokenTypes = {
   sessionToken: string | null,
   user: string | null,
 }
-
 class App extends React.Component<{}, tokenTypes>{
   constructor(props: {}){
     super(props)
@@ -55,5 +53,4 @@ class App extends React.Component<{}, tokenTypes>{
     )
   }
 }
-
 export default App;

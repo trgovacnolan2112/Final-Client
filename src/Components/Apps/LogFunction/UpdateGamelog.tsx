@@ -7,46 +7,34 @@ type updateGameLogTypes = {
     title: string,
     hoursplayed: string,
     difficulty: string,
-    rating: number,
+    rating: string,
     comments: string,
-    id: string
+    id: number
 }
 type propTypes ={
     token: string,
+    updateGame: (id: number, title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string)=> void,
+    id: number,
+    gamelog: any
 }
 class UpdateGameLog extends React.Component<propTypes,updateGameLogTypes>{
     constructor(props: propTypes){
         super(props)
         this.state={
             modalOpen: false,
-            title: this.state.title,
-            hoursplayed: this.state.hoursplayed,
-            difficulty: this.state.difficulty,
-            rating: this.state.rating, 
-            comments: this.state.comments,
-            id: this.state.id
+            title: this.props.gamelog.title,
+            hoursplayed: this.props.gamelog.hoursplayed,
+            difficulty: this.props.gamelog.difficulty,
+            rating: this.props.gamelog.rating, 
+            comments: this.props.gamelog.comments,
+            id: this.props.id
         }
     }
-    updateGameLog(){
-        fetch(`${APIURL}/gamelog/update/${this.state.id}`, {
-            method: 'PUT',
-            body: JSON.stringify({
-                gamelog: {
-                title: this.state.title,
-                hoursplayed: this.state.hoursplayed,
-                difficulty: this.state.difficulty,
-                rating: this.state.rating,
-                comments: this.state.comments,
-                id: this.state.id}
-            }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization':`${this.props.token}`
-            }
-        })
-    }
-    handleSubmit(){
-        this.updateGameLog()
+    handleSubmit(e: React.FormEvent<HTMLFormElement>){
+        e.preventDefault()
+        console.log('inside handle submit')
+        this.props.updateGame(this.props.id, this.state.title, this.state.hoursplayed, this.state.difficulty, this.state.rating, this.state.comments, this.props.token)
+        this.handleCLose()
     }
     handleOpen(){
         this.setState({modalOpen: true})
@@ -54,9 +42,6 @@ class UpdateGameLog extends React.Component<propTypes,updateGameLogTypes>{
     }
     handleCLose(){
         this.setState({modalOpen: false})
-    }
-    handleClick(id: string){
-        this.setState({id: ''})
     }
     render(){
         return(
@@ -72,17 +57,17 @@ class UpdateGameLog extends React.Component<propTypes,updateGameLogTypes>{
                         <p>
                             Fill In and Submit Update
                         </p>
-                        <form className='modalForm' onSubmit={() => this.updateGameLog()}>
+                        <form className='modalForm' onSubmit={(e) => this.handleSubmit(e)}>
                         <label>Name of Game Played</label>
-                        <input type ='text' onChange={(e) => this.setState({title: e.target.value})} />
+                        <input type ='text' value={this.state.title} onChange={(e) => this.setState({title: e.target.value})} />
                            <label>Title of Game</label>
-                        <input type ='text' onChange={(e) => this.setState({hoursplayed: e.target.value})} />
+                        <input type ='text' value={this.state.hoursplayed} onChange={(e) => this.setState({hoursplayed: e.target.value})} />
                            <label>Total Hours Logged</label>
-                        <input type ='text' onChange={(e) => this.setState({difficulty: e.target.value})} />
+                        <input type ='text' value={this.state.difficulty} onChange={(e) => this.setState({difficulty: e.target.value})} />
                            <label>Level Of Difficulty</label>
-                        <input type ='number' onChange={(e) => this.setState({rating:parseInt(e.target.value)})} />
+                        <input type ='text' value={this.state.rating} onChange={(e) => this.setState({rating: e.target.value})} />
                            <label>Overall Rating</label>
-                        <input type ='text' onChange={(e) => this.setState({comments: e.target.value})} />
+                        <input type ='text' value={this.state.comments} onChange={(e) => this.setState({comments: e.target.value})} />
                            <label>Comments On Gameplay</label>
                            <Button type='submit' style={{margin: '10px', border: '2px solid grey'}}>Submit Update</Button>
                         </form>

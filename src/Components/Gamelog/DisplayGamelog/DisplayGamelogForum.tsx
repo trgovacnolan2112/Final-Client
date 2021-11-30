@@ -5,30 +5,45 @@ import {Typography} from '@material-ui/core';
 import UpdateGameLog from '../../Apps/LogFunction/UpdateGamelog'
 import DeleteGame from'../../Apps/LogFunction/DeleteGame'
 import APIURL from '../../../Connect/API-URL'
+import { reduceEachTrailingCommentRange } from 'typescript';
+import { CommentSharp } from '@material-ui/icons';
+import CreateGameLog from '../../Apps/LogFunction/CreateGameLog';
 type gamelogForm ={
+    gamelog:[],
     title: string,
     hoursplayed: string,
     difficulty: string,
-    rating: number,
+    rating: string,
     comments: string,
     id: number
 }
-
+type States ={
+    gamelog:[],
+    title: string,
+    hoursplayed: string,
+    difficulty: string,
+    rating: string,
+    comments: string,
+    id: number
+}
 type gamelogAdminProps ={
     userRole: string ,
     token: string,
     deleteGame: (id: number, token: string)=> void,
-    gamelog: gamelogForm[],
+    updateGame:(id: number, title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string)=> void,
+    createGame:(title: string, hoursplayed: string, difficulty: string, rating: string, comments: string, token: string)=> void
 } 
-
-type stateType ={
-    gamelogs: []
-}
-class DisplayForumGame extends React.Component<gamelogAdminProps, stateType>{
-    constructor(props: any) {
+class DisplayForumGame extends React.Component<gamelogAdminProps, States>{
+    constructor(props: gamelogAdminProps) {
         super(props)
         this.state={
-            gamelogs: []
+            gamelog: [],
+            title: '',
+            hoursplayed: '',
+            difficulty: '',
+            rating: '',
+            comments: '',
+            id: 0
         }
     }
    componentDidMount(){
@@ -45,14 +60,19 @@ class DisplayForumGame extends React.Component<gamelogAdminProps, stateType>{
        .then(res => res.json())
        .then(data => {
            this.setState({
-               gamelogs: data
+               gamelog: data,
+               title: data.title,
+               hoursplayed: data.hoursplayed,
+               difficulty: data.difficulty,
+               rating: data.rating,
+               comments: data.comments
            });
            console.log(data)
        })
    }  
 
 gameForum(){
-    return this.state.gamelogs.map((gamelog: gamelogForm, index: number) =>(
+    return this.state.gamelog.map((gamelog: gamelogForm, index: number) =>(
                     <div className='container' key={index}>
                         <Card className='main'>
                             <CardContent>
@@ -77,12 +97,18 @@ gameForum(){
                                 <div className='modalDiv'>
                                     <UpdateGameLog
                                     token={this.props.token}
+                                    updateGame={this.props.updateGame}
+                                    id={gamelog.id}
+                                    gamelog={gamelog}
                                     />
                                     <DeleteGame
                                     id={gamelog.id}
                                     deleteGame={this.props.deleteGame}
                                     token={this.props.token}
                                     />
+                                    <CreateGameLog
+                                    createGame={this.props.createGame}
+                                    token={this.props.token}/>
                                 </div>
                             </CardContent>
                         </Card>
