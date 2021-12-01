@@ -1,5 +1,5 @@
 import React from "react";
-import APIURL from "../../Connect/API-URL";
+import APIURL from "../../Connect/environment";
 import DisplayGamelogForum from './DisplayGamelog/DisplayGamelogForum'
 import DisplayGamelog from './DisplayGamelog/DisplayGamelog';
 import CreateGameLog from "../Apps/LogFunction/CreateGameLog";

@@ -3,7 +3,7 @@ import Card from '@material-ui/core/Card';
 import {CardContent} from '@material-ui/core/'
 import {Typography} from '@material-ui/core';
 import UpdateGameLog from '../../Apps/LogFunction/UpdateGamelog'
-import APIURL from '../../../Connect/API-URL'
+import APIURL from '../../../Connect/environment'
 import DeleteGame from '../../Apps/LogFunction/DeleteGame'
 import CreateGame from '../../Apps/LogFunction/CreateGameLog';
 type gamelogForm ={

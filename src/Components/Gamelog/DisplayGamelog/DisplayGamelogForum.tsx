@@ -4,7 +4,7 @@ import {CardContent} from '@material-ui/core/'
 import {Typography} from '@material-ui/core';
 import UpdateGameLog from '../../Apps/LogFunction/UpdateGamelog'
 import DeleteGame from'../../Apps/LogFunction/DeleteGame'
-import APIURL from '../../../Connect/API-URL'
+import APIURL from '../../../Connect/environment'
 import { reduceEachTrailingCommentRange } from 'typescript';
 import { CommentSharp } from '@material-ui/icons';
 import CreateGameLog from '../../Apps/LogFunction/CreateGameLog';

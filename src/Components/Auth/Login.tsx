@@ -1,5 +1,5 @@
 import React from 'react'
-import APIURL from '../../Connect/API-URL'
+import APIURL from '../../Connect/environment'
 import {Button} from '@material-ui/core'
 
 type userTypes = {

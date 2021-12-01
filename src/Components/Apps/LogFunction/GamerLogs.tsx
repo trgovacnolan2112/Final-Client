@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
 import GamerLogDisplay from './Display/GamerLogsDisplay'
 import Button from '@material-ui/core/Button'
-import APIURL from '../../../Connect/API-URL'
-import CreateGamelog from '../LogFunction/CreateGameLog'
+import APIURL from '../../../Connect/environment'
 type propTypes= {
     token: string,
     user: string,

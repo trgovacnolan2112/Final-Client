@@ -4,7 +4,7 @@ import {CardContent} from '@material-ui/core/';
 import {Typography} from '@material-ui/core/'
 import UpdateCodeLog from '../../Apps/LogFunction/UpdateCodeLog';
 import DeleteCode from '../../Apps/LogFunction/DeleteCode';
-import APIURL from '../../../Connect/API-URL';
+import APIURL from '../../../Connect/environment';
 type codelogForm ={
     cheat: string,
     code: string,

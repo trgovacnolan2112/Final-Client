@@ -1,7 +1,6 @@
 import React from 'react'
 import {Dialog, PropTypes} from '@material-ui/core'
 import {Button} from '@material-ui/core'
-import APIURL from '../../../Connect/API-URL'
 type updateGameLogTypes = {
     modalOpen: boolean,
     title: string,
