@@ -5,7 +5,6 @@ switch(window.location.hostname){
     break;
  case'nctfinal2345.herokuapp.com':
  APIURL='https://nctfinal2345.herokuapp.com'
-break;
 }
 
 export default APIURL
